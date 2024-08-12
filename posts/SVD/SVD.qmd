@@ -1,0 +1,39 @@
+---
+title: "Singular Value Decomposition (SVD)"
+author: Nimitt
+date: 2023-03-07
+categories: [Maths for ML]
+description: "Exploring Singular Value Decomposition"
+jupyter: python3
+---
+
+```{python}
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.image import imread
+plt.rcParams['figure.figsize']=[16,8]
+
+A=imread("Datasets/puppy.jpg")
+X=np.mean(A,-1)
+img = plt.imshow(X)
+plt.set_cmap('gray')
+plt.show()
+```
+
+```{python}
+U,S,VT=np.linalg.svd(X,full_matrices=False)
+np.shape(VT)
+S=np.diag(S)
+for r in [5,20,100,340]:
+    Xapprox=U[:,:r] @ S[:r,:r] @ VT[:r,:]
+    print(np.shape(Xapprox))
+    plt.imshow(Xapprox)
+    plt.show()
+```
+
+```{python}
+print(np.shape(X))
+print(np.shape(U),np.shape(S),np.shape(VT))
+print(np.shape(U[:,:r]),np.shape(S[:r,:r]),np.shape(VT[:r,:]))
+```
+

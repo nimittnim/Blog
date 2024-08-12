@@ -1,0 +1,16 @@
+---
+title: "About"
+image: profile.png
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/in/nimitt-n
+    - icon: github
+      text: Github
+      href: https://github.com/nimittnim
+
+---
+
+About this blog

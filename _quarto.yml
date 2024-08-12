@@ -1,0 +1,19 @@
+project:
+  type: website
+
+website:
+  title: "Nimitt Blog"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/nimittnim
+      - icon: linkedin
+        href: https://linkedin/in/nimitt-n
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+
+

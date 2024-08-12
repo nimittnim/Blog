@@ -1,0 +1,12 @@
+{
+  "hash": "fdc6cf7c8a4048b245196435fe2842e9",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Singular Value Decomposition (SVD)\"\nauthor: Nimitt\ndate: 2023-03-07\ncategories: [Maths for ML]\ndescription: \"Exploring Singular Value Decomposition\"\njupyter: python3\n---\n\n::: {#4e6398f1 .cell execution_count=1}\n``` {.python .cell-code}\nimport matplotlib.pyplot as plt\nimport numpy as np\nfrom matplotlib.image import imread\nplt.rcParams['figure.figsize']=[16,8]\n\nA=imread(\"Datasets/puppy.jpg\")\nX=np.mean(A,-1)\nimg = plt.imshow(X)\nplt.set_cmap('gray')\nplt.show()\n```\n\n::: {.cell-output .cell-output-display}\n![](SVD_files/figure-html/cell-2-output-1.png){width=941 height=637}\n:::\n:::\n\n\n::: {#00991fb7 .cell execution_count=2}\n``` {.python .cell-code}\nU,S,VT=np.linalg.svd(X,full_matrices=False)\nnp.shape(VT)\nS=np.diag(S)\nfor r in [5,20,100,340]:\n    Xapprox=U[:,:r] @ S[:r,:r] @ VT[:r,:]\n    print(np.shape(Xapprox))\n    plt.imshow(Xapprox)\n    plt.show()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n(340, 510)\n```\n:::\n\n::: {.cell-output .cell-output-display}\n![](SVD_files/figure-html/cell-3-output-2.png){width=941 height=637}\n:::\n\n::: {.cell-output .cell-output-stdout}\n```\n(340, 510)\n```\n:::\n\n::: {.cell-output .cell-output-display}\n![](SVD_files/figure-html/cell-3-output-4.png){width=941 height=637}\n:::\n\n::: {.cell-output .cell-output-stdout}\n```\n(340, 510)\n```\n:::\n\n::: {.cell-output .cell-output-display}\n![](SVD_files/figure-html/cell-3-output-6.png){width=941 height=637}\n:::\n\n::: {.cell-output .cell-output-stdout}\n```\n(340, 510)\n```\n:::\n\n::: {.cell-output .cell-output-display}\n![](SVD_files/figure-html/cell-3-output-8.png){width=941 height=637}\n:::\n:::\n\n\n::: {#037ea46d .cell execution_count=3}\n``` {.python .cell-code}\nprint(np.shape(X))\nprint(np.shape(U),np.shape(S),np.shape(VT))\nprint(np.shape(U[:,:r]),np.shape(S[:r,:r]),np.shape(VT[:r,:]))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n(340, 510)\n(340, 340) (340, 340) (340, 510)\n(340, 340) (340, 340) (340, 510)\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "SVD_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

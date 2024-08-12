@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog"
+  },
+  {
+    "objectID": "posts/SVD/SVD.html",
+    "href": "posts/SVD/SVD.html",
+    "title": "Singular Value Decomposition (SVD)",
+    "section": "",
+    "text": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom matplotlib.image import imread\nplt.rcParams['figure.figsize']=[16,8]\n\nA=imread(\"Datasets/puppy.jpg\")\nX=np.mean(A,-1)\nimg = plt.imshow(X)\nplt.set_cmap('gray')\nplt.show()\n\n\n\n\n\n\n\n\n\nU,S,VT=np.linalg.svd(X,full_matrices=False)\nnp.shape(VT)\nS=np.diag(S)\nfor r in [5,20,100,340]:\n    Xapprox=U[:,:r] @ S[:r,:r] @ VT[:r,:]\n    print(np.shape(Xapprox))\n    plt.imshow(Xapprox)\n    plt.show()\n\n(340, 510)\n\n\n\n\n\n\n\n\n\n(340, 510)\n\n\n\n\n\n\n\n\n\n(340, 510)\n\n\n\n\n\n\n\n\n\n(340, 510)\n\n\n\n\n\n\n\n\n\n\nprint(np.shape(X))\nprint(np.shape(U),np.shape(S),np.shape(VT))\nprint(np.shape(U[:,:r]),np.shape(S[:r,:r]),np.shape(VT[:r,:]))\n\n(340, 510)\n(340, 340) (340, 340) (340, 510)\n(340, 340) (340, 340) (340, 510)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "Singular Value Decomposition (SVD)\n\n\n\n\n\n\nMaths for ML\n\n\n\nExploring Singular Value Decomposition\n\n\n\n\n\nMar 7, 2023\n\n\nNimitt\n\n\n\n\n\n\nNo matching items"
+  }
+]
