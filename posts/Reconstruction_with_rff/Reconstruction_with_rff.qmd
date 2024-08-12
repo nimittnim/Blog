@@ -1,0 +1,255 @@
+---
+title: "Improving Linear Regression using Random Fourier Feautures"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Convolutional Neural Network"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+```{python}
+import torch
+import torchvision
+import torchvision.transforms as transforms
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import torch.optim as optim
+
+import warnings
+warnings.filterwarnings('ignore')
+import numpy as np
+import pandas as pd
+import torch.nn as nn
+import torch.nn.functional as F
+import os
+from einops import rearrange
+from sklearn import preprocessing
+```
+
+```{python}
+def mask_image_patch(img,x,y,z,patch_size):
+    img_copy = img.clone()
+    for i in range(patch_size):
+        for j in range(patch_size):
+                for k in range(z):
+                    img_copy[x+i][y+j][k] = torch.nan
+    return img_copy
+
+def mask_image_random(img,patch_size):
+    img_copy = img.clone()
+    n = len(img)
+    m = len(img[0])
+    random_i = np.random.choice(n*m,patch_size*patch_size,replace=False)
+    for i in random_i:
+        for j in range(3):
+            img_copy[i//n][i%m] = torch.nan
+    return img_copy
+
+def create_mask(t,x,y,patch_size):
+    mask = torch.full(t.shape,True)
+    z = t.shape[2]
+    for i in range(patch_size):
+        for j in range(patch_size):
+                for k in range(z):
+                    mask[x+i][y+j][k] = False
+    return mask
+
+def create_coordinate_map(img):
+    height, width, num_channels = img.shape
+    X = torch.empty((img.shape[0],img.shape[1],2))
+    
+    for i in range(height):
+        for j in range(width):
+            X[i][j][0] = i
+            X[i][j][1] = j
+    return X.reshape(-1,2)
+
+def stack_itself(t, n):
+    stacked_t = t.unsqueeze(1).expand(-1, n, -1)
+    return stacked_t.squeeze()
+
+def scale(img):
+    img_flatted = img.reshape(-1,1)
+    scaler_X = preprocessing.MinMaxScaler().fit(img_flatted)
+    img_scaled = scaler_X.transform(img_flatted).reshape(img.shape)
+    img_scaled = torch.tensor(img_scaled)
+    img_scaled = img_scaled.float()
+    return img_scaled
+
+def fill_patch(original_img,reconstructed_img_patch,x,y,patch_size):
+    reconstructed_img = original_img.clone()
+    for i in range(patch_size):
+        for j in range(patch_size):
+                for k in range(3):
+                    reconstructed_img[x+i][y+j][k] = reconstructed_img_patch[i][j][k]
+    return reconstructed_img
+```
+
+```{python}
+img = torchvision.io.read_image('dog.jpg')
+img_scaled = scale(img)
+cropped_img = torchvision.transforms.functional.crop(img_scaled,600,800,300,300)
+cropped_img = rearrange(cropped_img,'c h w -> h w c')
+cropped_img = torch.tensor(cropped_img,dtype = torch.float32)
+original_img = cropped_img.clone()
+```
+
+```{python}
+# LR + RFF
+def plot_reconstructed_and_original_image(original_img, masked_img, reconstructed_img, title=""):
+    """
+    net: torch.nn.Module
+    X: torch.Tensor of shape (num_samples, 2)
+    Y: torch.Tensor of shape (num_samples, 3)
+    """
+    fig = plt.figure(figsize=(6, 4))
+    gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 1])
+
+    ax0 = plt.subplot(gs[0])
+    ax1 = plt.subplot(gs[1])
+    ax2 = plt.subplot(gs[2])
+
+    ax0.imshow(reconstructed_img)
+    ax0.set_title("Reconstructed Image")
+    
+    ax1.imshow(original_img.cpu())
+    ax1.set_title("Original Image")
+
+    ax2.imshow(masked_img.cpu())
+    ax2.set_title("Masked Image")
+
+    
+    for a in [ax0, ax1, ax2]:
+        a.axis("off")
+    plt.show()
+
+def create_rff_features(X, num_features, sigma):
+    from sklearn.kernel_approximation import RBFSampler
+    rff = RBFSampler(n_components=num_features, gamma=1/(2 * sigma**2))
+    X = X.cpu().numpy()
+    X = rff.fit_transform(X)
+    return torch.tensor(X, dtype=torch.float32)
+
+def train(net, lr, X, Y, max_epochs=2000):
+    """
+    net: torch.nn.Module
+    lr: float
+    X: torch.Tensor of shape (known_pixels, 2) // (x,y)
+    Y: torch.Tensor of shape (known_pixels, 3) // (r,g,b)
+    """
+
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+    outputs = net(X)
+    loss = criterion(outputs, Y)
+    
+    prev_loss = float('inf')  
+    epsilon = 1e-5
+    prev_loss = float('inf')
+    max_epochs = 10000
+    
+    for i in range(max_epochs):
+        optimizer.zero_grad()
+        outputs = net(X)
+        loss = criterion(outputs, Y)
+        loss.backward()
+        optimizer.step()
+
+        if abs(prev_loss - loss.item()) < epsilon:
+            break
+        prev_loss = loss.item()
+
+
+
+class LinearModel(nn.Module):
+    def __init__(self, in_features, out_features):
+        super(LinearModel, self).__init__()
+        self.linear = nn.Linear(in_features, out_features)
+        
+    def forward(self, x):
+        return self.linear(x)
+    
+
+def image_reconstrunction_linear_rff(original_img,masked_img):
+    
+    y = original_img.clone().reshape(-1,3)
+    X = create_coordinate_map(original_img)
+    mask = ~torch.isnan(masked_img).reshape(-1,3)
+    X_train = X[mask[:,0:2]].reshape(-1,2)
+    y_train = y[mask].reshape(-1,3)
+
+    # Without RFF
+    # net = LinearModel(2,3)
+    # train(net,0.01,X_train,y_train,1000)
+    # plot_reconstructed_and_original_image(original_img, net, X, title="Reconstructed Image")
+
+    # With RFF
+    features = 10000
+    X_rff = create_rff_features(X, features, 0.008)
+    mask_rff = stack_itself(mask[:,0].unsqueeze(1),features)
+    X_rff_train = X_rff[mask_rff].reshape(-1,features)
+    y_rff_train = y[mask].reshape(-1,3)
+
+    
+    netrff = LinearModel(X_rff_train.shape[1], 3)
+    train(netrff, 0.005, X_rff_train, y_rff_train, 1000)
+    height, width, num_channels = original_img.shape
+    netrff.eval()
+    with torch.no_grad():
+        reconstructed_img = netrff(X_rff).reshape(height,width,num_channels)
+    return reconstructed_img
+```
+
+```{python}
+def mse(original_img,reconstructed_img):
+    sum = torch.tensor(0)
+    for i in range(3):
+        sum = sum + (nn.functional.mse_loss(original_img[:,:,i],reconstructed_img[:,:,i]))
+    return sum/3
+
+def psnr(original_img,reconstructed_img):
+    psnr = torch.tensor(0)
+    for i in range(3):
+        maxi = torch.max(original_img[:,:,i])
+        mse = nn.functional.mse_loss(original_img[:,:,i],reconstructed_img[:,:,i])
+        psnr = psnr + (20*torch.log10(maxi/mse))
+    return psnr/3
+```
+
+```{python}
+# 1a RFF
+patch_size = 30
+# x_y_s = [[10,10],[90,150],[140,60]]
+x_y_s = [[90,150]]
+reconstructed_images_2 = []
+
+for i in range(len(x_y_s)):
+    print("Linear Regression + RFF for 30*30 rectangular patch")
+    masked_img = mask_image_patch(original_img,x_y_s[i][0],x_y_s[i][1],3,patch_size)
+    reconstructed_img = image_reconstrunction_linear_rff(original_img,masked_img)
+    reconstructed_images_2.append(reconstructed_img)
+    plot_reconstructed_and_original_image(original_img, masked_img, reconstructed_img, title="Reconstructed Image with RFF Features")
+    print("MSE for reconstruction : ",mse(original_img, reconstructed_img))
+    print("PSNR for reconstruction : ",psnr(original_img, reconstructed_img))
+```
+
+```{python}
+# 1b RFF
+patch_size = 30
+titles = ["Random Missing pixels RFF"]
+reconstructed_images_4 = []
+
+print(titles[0])
+masked_img = mask_image_random(original_img, patch_size)
+reconstructed_img = image_reconstrunction_linear_rff(original_img, masked_img)
+reconstructed_images_4.append(reconstructed_img)
+fig,axs = plt.subplots(1,2)
+axs[0].imshow(masked_img)
+axs[1].imshow(reconstructed_img)
+plt.show()
+print("MSE for reconstruction : ",mse(original_img, reconstructed_img))
+print("PSNR for reconstruction : ",psnr(original_img, reconstructed_img))
+```
+

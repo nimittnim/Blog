@@ -1,0 +1,265 @@
+---
+title: "seq2seq"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Implementation of a simple seq2seq model"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+**SEQ2SEQ**
+
+Use LSTM and word embeddings to translate one coding to other.
+
+```{python}
+import torch.nn as nn
+import torch.optim as optim
+import torch
+import numpy as np
+```
+
+```{python}
+class WordEmbeddings:
+
+    def __init__(self,m,r):
+
+        self.model = nn.Sequential(
+            nn.Linear(m,r),
+            nn.Linear(r,m),
+        )
+        self.loss_function = nn.CrossEntropyLoss()
+        self.optimizer = optim.Adam(self.model.parameters(),lr = 0.01)
+        self.unique_words = None
+
+    def one_hot_encode_word(self,word):
+
+        if (word in self.unique_words):
+            m = len(self.unique_words)
+            endcoded_word_index = self.unique_words.index(word)
+            encoded_word = np.zeros(m)
+            encoded_word[endcoded_word_index] = 1
+            return torch.tensor(encoded_word,dtype = torch.float32)
+        else :
+            print("Query word not in trained words")
+    
+    def generate_encoded_dataset(self,words):
+
+        unique_words = list(set(words))
+        n = len(words)
+        m = len(unique_words)
+        X = np.zeros((n,m))
+        y = np.zeros((n,m))
+        for i in range(n-1):
+            j = unique_words.index(words[i])
+            j_next_word = unique_words.index(words[i+1])
+            X[i][j] = 1
+            y[i][j_next_word] = 1 
+        return torch.tensor(X,dtype = torch.float32),torch.tensor(y,dtype = torch.float32)
+        
+    def train(self,X,y):
+        
+        max_epochs = 2000
+        # print(f'Initial Loss {self.loss_function(self.model(X),y)}')
+        for e in range(max_epochs):
+            y_hat = self.model(X)
+            loss = self.loss_function(y_hat,y)
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
+        # print(f'Final Loss {self.loss_function(self.model(X),y)}')
+
+    def get_embedding(self,words):
+
+        unique_words = list(set(words))
+        self.unique_words = unique_words
+        
+        X,y = self.generate_encoded_dataset(words)
+        self.train(X,y)
+        params = []
+        for param in self.model.parameters():
+            params.append(param)
+        embedding = np.array(params[0].detach()).T
+        return embedding
+
+    def next_word(self,word):
+
+        if (word in self.unique_words):
+            softmax = nn.Softmax(dim = 0)
+            out = np.array(softmax(self.model(self.one_hot_encode_word(word))).detach())
+            return self.unique_words[np.where(out == np.max(out))[0][0]]    
+        else :
+            print("Query word not in trained words") 
+            
+    def vec2word(self,vec):
+        ind = np.argmin(np.array(vec.detach()))
+        return self.unique_words[ind]
+```
+
+```{python}
+# LSTM cell
+
+class LSTMcell:
+
+    def __init__(self,m,r):
+
+        # percentage long term to remember
+        self.w_input_1 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_1 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_1 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigma
+
+        # percentage potential memory to remember
+        self.w_input_2 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_2 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_2 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigma
+
+        # Potential Long term memory for current input
+        self.w_input_3 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_3 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_3 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # tanh
+
+        # New short
+        self.w_input_4 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_4 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_4 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigmoid
+        self.parameters = torch.tensor([self.w_input_1,self.w_input_2,self.w_input_3,self.w_input_4,
+                           self.w_short_1,self.w_short_2,self.w_short_3,self.w_short_4,
+                           self.b_1,self.b_2,self.b_3,self.b_4],requires_grad=True)
+
+
+    def integrate(self, input, short, long):
+        # percentage long term to remember
+        
+        o1 = torch.matmul(self.w_input_1, input)
+        o2 = torch.matmul(self.w_short_1, short)
+        o3 = torch.mul(long,torch.sigmoid(o1+o2 + self.b_1))
+
+        # percentage potential memory to remember
+        o4 = torch.matmul(self.w_input_2, input)
+        o5 = torch.matmul(self.w_short_2, short) 
+        o6 = torch.sigmoid(o4+o5 + self.b_2)
+
+        # Potential Long term memory for current input
+        o7 = torch.matmul(self.w_input_3, input)
+        o8 = torch.matmul(self.w_short_3, short)
+        o9 = torch.tanh(o7+o8+ self.b_3) 
+
+        newLong = o3 + torch.mul(o6,o9)
+        
+
+        # new short
+        o10 = torch.matmul(self.w_input_4, input)
+        o11 = torch.matmul(self.w_short_4, short)
+        o12 = torch.sigmoid(o11+o10 + self.b_4)
+        
+        newShort = torch.mul(o12,(torch.tanh(newLong)))
+
+        return newShort,newLong
+```
+
+```{python}
+class LSTM:
+
+    def __init__(self):
+        self.layers = []
+        self.ms = []
+        self.rs = []
+        self.parameters = []
+        self.loss_function = nn.MSELoss()
+    
+    def add_layer(self,m,r,n): 
+        # m : Input dimension 
+        # n :number of cells in the layer 
+        # r : output dimension
+        self.layers.append([])  
+        self.ms.append(m)
+        self.rs.append(r)   
+        for i in range(n):
+            newcell = LSTMcell(m,r)
+            self.layers[-1].append(newcell)
+            self.parameters.append(newcell.parameters)
+
+    def forward(self, input):
+        l = len(self.layers)
+        short = torch.zeros((l, self.rs[0],1), dtype = torch.float32)
+        long = torch.zeros((l,self.rs[0],1),dtype = torch.float32)
+        for i in range(len(input)):
+            current_input = input[i].unsqueeze(1)
+            for j in range(l):
+                short_,long_ = short[j],long[j]
+                for lstm_cell in self.layers[j]:
+                    short_,long_ = lstm_cell.integrate(current_input,short_,long_)
+                short[j],long[j] = short_,long_
+                current_input = short_
+        return short_
+    
+    def out(self,input):
+        out = []
+        for i in range(len(input)):
+            out.append(self.forward(input[i]))
+        return torch.tensor(out,requires_grad=True).unsqueeze(-1)
+    
+    def train(self,X,y,max_epochs):
+        optimizer = optim.Adam(self.parameters)
+        for i in range(max_epochs):
+            out = self.out(X)
+            loss = self.loss_function(out,y)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+```
+
+```{python}
+class Seq2Seq:
+
+    def __init__(self,m):
+        r = 20
+        self.we = WordEmbeddings(m,r)
+        self.encoder = LSTM()
+        self.decoder = LSTM()
+        self.feed_forward = nn.Sequential(
+            nn.Linear(r,r),
+            nn.Softmax()
+        )
+        self.loss_function = nn.CrossEntropyLoss()
+
+    def encode(self,input):
+        return self.encoder.forward(input,0,0)
+    
+    def feed(self,input):
+        return self.feed_forward(input)
+    
+    def decode(self, short,long):
+        EOS = self.we.one_hot_encode_word("EOS")
+        input = EOS.copy()
+        translation = []
+        while True:
+            out = self.feed(self.decoder.forward(input, short, long))
+            translation.append(out)
+            if (self.we.unique_words(max(out)) == "EOS"):
+                break
+        return torch.tensor(translation,dtype = torch.flaot32)
+    
+    def generate_embeddings(self,X,y):
+        X_embeddings = self.we.get_embeddings(X)
+        y_embeddings = self.we.get_embeddings(y)
+        return torch.tensor(X_embeddings,dtype=torch.float32),torch.tensor(y_embeddings,dtype=torch.float32)
+    
+    def forward(self, X,y):
+        inp = self.generate_embeddings(X,y)
+        context_vec =  self.encode(inp)
+        translation = self.decode(context_vec[0],context_vec[1])
+        return translation
+    
+    def train(self,X,y):
+        optimizer = nn.optim(self.paramters())
+        loss_function = self.loss_function()
+        y_hat = self.forward(X,y)
+        return
+```
+

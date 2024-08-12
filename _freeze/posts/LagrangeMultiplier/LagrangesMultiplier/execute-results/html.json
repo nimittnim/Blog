@@ -1,0 +1,12 @@
+{
+  "hash": "b80fb3b790e361dfc71c878a260bcd1d",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Lagranges Multiplier\"\nauthor: Nimitt\ndate: 2023-03-15\ncategories: [Machine Learning]\ndescription: \"Constrained Optimisation\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n\n\nLagrange's Multiplier \n\nfind the optmial $\\theta$ under the given constraints. \nIf,\n    $g(\\theta) = \\alpha$ \nis the constraint then,\n\nadd a penalty $P(\\theta)$ to the loss function such that,\n    $P(\\theta) = g^-(\\theta)$\n\n",
+    "supporting": [
+      "LagrangesMultiplier_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "hash": "c27766530c346a50918737f03d966fbf",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Gauss Siedel\"\nauthor: Nimitt\ndate: 2023-01-15\ncategories: [Numerical Methods]\ndescription: \"Implementation of Gauss Sielel\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n::: {#18d026be .cell execution_count=1}\n``` {.python .cell-code}\nn = int(input(\"Enter n\"))\n\nmat = [[0.0] * (n + 1) for _ in range(n)]\n\nfor j in range(n):\n    row = input(f\"Enter the {j + 1} th row of coefficients\")\n    row_arr = row.split(\" \")\n    for l in range(n + 1):\n        mat[j][l] = float(row_arr[l])\n\nprint(\"Enter your guessed zeros:\\n\")\nroots = [0.0] * n\nroots_array = list(map(float, input(\"Enter the roots : \").split()))\n\n\nfor k in range(1, n):\n    roots[k] = roots_array[k - 1]\nprint(roots)\n\ndef GaussSiedel(mat, roots, eps=0.001, max_iterations=100):\n    n = len(mat)\n    eps = 0.0000001\n    \n    for iter in range(max_iterations):\n        flag = False\n        for i in range(n):\n            x = 0\n            for j in range(n):\n                if j != i:\n                    x += mat[i][j] * roots[j]\n            x = (mat[i][n] - x) / mat[i][i]\n            e = abs(roots[i] - x)\n            if e > eps:\n                flag = True\n            roots[i] = x\n        if not flag:\n            break\n        print(roots)\n\n\nGaussSiedel(mat, roots)\nprint(\"Roots:\", roots)\n```\n:::\n\n\n",
+    "supporting": [
+      "GaussSiedel_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,84 @@
+---
+title: "Hugging Face"
+author: Nimitt
+date: 2024-03-15
+categories: [Machine Learning]
+description: "Model deployment using Hugging Face"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+
+
+```{python}
+%pip install -qU "transformers==4.38.0" --upgrade
+%pip install -qU "huggingface_hub"
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+# from google.colab import userdata
+# from huggingface_hub import login
+# login(userdata.get('HF_TOKEN'))
+```
+
+**Text Generation using Gemma 2B**
+
+```{python}
+import torch
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/', height: 49, referenced_widgets: [c6233da2011442b3b661830073359202, 157c35f0c3044b2e9a54fcae17dc3765, 920a0113ac7c4a1f85373c5284c86566, 9626ce04fea442abb59a0d8306d6181e, d9ee61b9e3754a0e92f60cf68aae212a, f5d0d708a8cc4790a96c28839972d087, 90ef1ee927f04df5b9bf40c8f45c30fa, 9757e3cc25cc4c16a045b6e08275a1ff, 60fdacd5c83c4c2da98633372ac189ee, 33bde69da13549c1b3384fa637fb30a9, 1860f1622dfc4bebb40cd304a22dfa9f]}
+from transformers import pipeline
+generate = pipeline(task = "text-generation", model = "google/gemma-2b-it", model_kwargs = {"torch_dtype": torch.bfloat16},device = "cuda")
+```
+
+```{python}
+inst = [
+    {
+        "role" : "user",
+        "content" : "Define an algorithm"
+    }
+]
+prompt = generate.tokenizer.apply_chat_template(inst,tokenize = False,add_generation_prompt = True)
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+print(prompt)
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+out = generate(prompt, max_new_tokens = 200)
+print(out)
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+print(out[0]["generated_text"][len(prompt):])
+```
+
+**Text Classification**
+
+```{python}
+classifier = pipeline(task = "sentiment-analysis",model = "distilbert/distilbert-base-uncased-finetuned-sst-2-english")
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+classifier("You are so kind")
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+classifier("You should not behave rudely")
+```
+
+```{python}
+#| colab: {base_uri: 'https://localhost:8080/'}
+classifier("Everything is happening worst in my life")
+```
+

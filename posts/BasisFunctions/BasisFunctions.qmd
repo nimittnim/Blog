@@ -1,0 +1,69 @@
+---
+title: "Basis Functions"
+author: Nimitt
+date: 2023-03-12
+categories: [Machine Learning]
+description: "Basis Functions for Linear Regression"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+**Basis Functions**
+
+Basis functions are tranformations that tranforms dataset into space that is more easily classifiable (Kernel Trick).
+
+Some Polynomial basis functions :
+
+1. Chebyslev's Polynomial 
+
+$T_{0}(x) = 1$\
+$T_{1}(x) = x$\
+$T_{n+1}(x) = 2xT_{n}(x) - T_{n-1}(x)$
+
+```{python}
+def chebyshev_polynomial(x,degree):
+    n = degree
+    if degree == 0 :
+        return 1
+    elif degree == 1:
+        return x
+    else :
+        return (2*x)*chebyshev_polynomial(x,n-1) - chebyshev_polynomial(x,n-2)
+```
+
+2. Legendre's Polynomial
+
+$P_{0}(x) = 1$\
+$P_{1}(x) = x$\
+$(n+1)P_{n+1}(x) = (2n+1)P_{n}(x) - P_{n-1}(x)$ 
+
+```{python}
+# Legendre Polynomial
+def legendre_polynomial(x, degree):
+    n = degree
+    if degree == 0 :
+        return 1
+    elif degree == 1:
+        return x
+    else :
+        return ((1/n)*((2*n-1)*legendre_polynomial(x,n-1) - legendre_polynomial(x,n-2)))
+```
+
+3. Bernstein Basis
+
+$B_{n,i}(x) = {n\choose i} (1-x)^{n-i}x^{i} $
+
+Random Fourier Features 
+
+```{python}
+import sklearn
+import torch
+def create_rff_features(X, num_features, sigma):
+    from sklearn.kernel_approximation import RBFSampler
+    rff = RBFSampler(n_components=num_features, gamma=1/(2 * sigma**2))
+    X = X.cpu().numpy()
+    X = rff.fit_transform(X)
+    return torch.tensor(X, dtype=torch.float32)
+```
+

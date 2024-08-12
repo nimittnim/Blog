@@ -1,0 +1,12 @@
+{
+  "hash": "98c0c28666abc5257f80aef020f98940",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\njupyter: python3\n---\n\n\n\n\nConvolutional Neural Networks\n\nUse convolution to extract the spacial and temporal features and feed them to a Neural Network.\n\n::: {#b9ffa5d1 .cell execution_count=1}\n``` {.python .cell-code}\nimport scipy as sp\nimport matplotlib.pyplot as plt\nimport numpy as np\n```\n:::\n\n\n::: {#16e56e85 .cell execution_count=2}\n``` {.python .cell-code}\n# Convolution\n\ndef convolve(kernel, X):\n    return sp.signal.convolve2d(kernel,X)\n```\n:::\n\n\n::: {#477680d9 .cell execution_count=3}\n``` {.python .cell-code}\nX = plt.imread(\"Datasets/duck.png\")\nX = np.mean(X,-1)\nplt.imshow(X)\n```\n\n::: {.cell-output .cell-output-display}\n![](ConvolutionalNeuralNetworks_files/figure-html/cell-4-output-1.png){width=424 height=416}\n:::\n:::\n\n\n::: {#48f1e7a2 .cell execution_count=4}\n``` {.python .cell-code}\n# Convolving filter\n\nkernel = np.empty((3,3))\n\nkernel[0][0] = -1\nkernel[0][1] = -2\nkernel[0][2] = -1\nkernel[1][0] = 0\nkernel[1][1] = 0\nkernel[1][2] = 0\nkernel[2][0] = 1\nkernel[2][1] = 2\nkernel[2][2] = 1\n```\n:::\n\n\n::: {#2662f273 .cell execution_count=5}\n``` {.python .cell-code}\nfiltered_image = convolve(kernel,X)\n```\n:::\n\n\n::: {#4bb4abae .cell execution_count=6}\n``` {.python .cell-code}\nplt.imshow(filtered_image)\nplt.set_cmap('Accent')\n```\n\n::: {.cell-output .cell-output-display}\n![](ConvolutionalNeuralNetworks_files/figure-html/cell-7-output-1.png){width=424 height=416}\n:::\n:::\n\n\n",
+    "supporting": [
+      "ConvolutionalNeuralNetworks_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

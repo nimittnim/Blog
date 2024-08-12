@@ -1,0 +1,12 @@
+{
+  "hash": "d6e6d5ec4c3c848af7812a4a812e93a6",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Heun Method\"\nauthor: Nimitt\ndate: 2023-01-15\ncategories: [Numerical Methods]\ndescription: \"Implementation of Heun Method\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n::: {#256ac928 .cell execution_count=1}\n``` {.python .cell-code}\nx = []\ny = []\nt = []\nstep = 0.1\nt_end = 20\nfor k in range(int(t_end/step)):\n    t.append(k*step)\na = 1.2 \nb = 0.6\nc = 0.8\nd = 0.3\nx.append(2)\ny.append(1)\nx_previous  = 2\ny_previous = 1\n\ndef x_deri(x,y):\n    a = 1.2 \n    b = 0.6\n    x_deri = a*x - b*x*y\n    return x_deri\n\ndef y_deri(x,y):\n    c = 0.8\n    d = 0.3\n    y_deri =  -c*y + d*x*y\n    return y_deri\n\nfor i in range(len(t)):\n    y_current = y_previous + y_deri(x_previous,y_previous)*step\n    y_corrected_deri = (y_deri(x_previous,y_previous)+y_deri(x_previous,y_current))/2\n    y_current = y_previous + y_corrected_deri*step\n\n    x_current = x_previous + x_deri(x_previous,y_previous)*step\n    x_corrected_deri = (x_deri(x_previous,y_previous)+x_deri(x_current,y_previous))/2\n    x_current = x_previous + x_corrected_deri*step\n\n    y.append(y_current)\n    x.append(x_current)\n    y_previous = y_current\n    x_previous = x_current\n\nprint(x[-1])\nprint(y[-1])\nprint(len(x))\n```\n:::\n\n\n",
+    "supporting": [
+      "HeunMethod_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

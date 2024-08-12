@@ -13,4 +13,5 @@ about:
 
 ---
 
-About this blog
+Junior Undergraduate, IIT Gandhinagar<br>
+Computer Science and Engineering

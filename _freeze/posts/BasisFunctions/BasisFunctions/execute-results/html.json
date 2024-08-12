@@ -1,0 +1,12 @@
+{
+  "hash": "4152aa1a0052e1b64b9f080d233b5351",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Basis Functions\"\nauthor: Nimitt\ndate: 2023-03-12\ncategories: [Machine Learning]\ndescription: \"Basis Functions for Linear Regression\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n\n\n\n**Basis Functions**\n\nBasis functions are tranformations that tranforms dataset into space that is more easily classifiable (Kernel Trick).\n\nSome Polynomial basis functions :\n\n1. Chebyslev's Polynomial \n\n$T_{0}(x) = 1$\\\n$T_{1}(x) = x$\\\n$T_{n+1}(x) = 2xT_{n}(x) - T_{n-1}(x)$\n\n::: {#6a79ea76 .cell execution_count=1}\n``` {.python .cell-code}\ndef chebyshev_polynomial(x,degree):\n    n = degree\n    if degree == 0 :\n        return 1\n    elif degree == 1:\n        return x\n    else :\n        return (2*x)*chebyshev_polynomial(x,n-1) - chebyshev_polynomial(x,n-2)\n```\n:::\n\n\n2. Legendre's Polynomial\n\n$P_{0}(x) = 1$\\\n$P_{1}(x) = x$\\\n$(n+1)P_{n+1}(x) = (2n+1)P_{n}(x) - P_{n-1}(x)$ \n\n::: {#d541ee27 .cell execution_count=2}\n``` {.python .cell-code}\n# Legendre Polynomial\ndef legendre_polynomial(x, degree):\n    n = degree\n    if degree == 0 :\n        return 1\n    elif degree == 1:\n        return x\n    else :\n        return ((1/n)*((2*n-1)*legendre_polynomial(x,n-1) - legendre_polynomial(x,n-2)))\n```\n:::\n\n\n3. Bernstein Basis\n\n$B_{n,i}(x) = {n\\choose i} (1-x)^{n-i}x^{i} $\n\nRandom Fourier Features \n\n::: {#1f4bd086 .cell execution_count=3}\n``` {.python .cell-code}\nimport sklearn\nimport torch\ndef create_rff_features(X, num_features, sigma):\n    from sklearn.kernel_approximation import RBFSampler\n    rff = RBFSampler(n_components=num_features, gamma=1/(2 * sigma**2))\n    X = X.cpu().numpy()\n    X = rff.fit_transform(X)\n    return torch.tensor(X, dtype=torch.float32)\n```\n:::\n\n\n",
+    "supporting": [
+      "BasisFunctions_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

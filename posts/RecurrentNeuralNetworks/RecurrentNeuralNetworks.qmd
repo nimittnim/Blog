@@ -1,0 +1,206 @@
+---
+title: "Recurrent Neural Networks"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Overview of RNNs"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+Recurrent Neural Networks
+
+In these neural networks the output is influenced by previous inputs too, so useful for sequential data. For example, predicting next word in the sentence. Basically, they have loops which feeds back to the same layer.
+
+$ h_{t} = W_{hh}x_{t-1} + W_{hx}x_{t}$ \
+$ y_{t} = W_{yh}h_{t}$
+
+But these Neural Networks are very hard to train because of vanishing and exploding gradient problem. So, we have its updated version LSTM : Long Short Term Memory Networks where we don't consider all the previous inputs but channelize them into short and long channels using Forget Gate.
+
+LSTM
+
+```{python}
+import torch
+import torch.nn as nn
+import numpy as np
+import torch.optim as optim
+```
+
+```{python}
+# LSTM cell
+
+class LSTMcell(nn.Module):
+
+    def __init__(self,m,r):
+        super().__init__()
+        # percentage long term to remember
+        self.w_input_1 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_1 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_1 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigma
+
+        # percentage potential memory to remember
+        self.w_input_2 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_2 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_2 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigma
+
+        # Potential Long term memory for current input
+        self.w_input_3 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_3 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_3 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # tanh
+
+        # New short
+        self.w_input_4 = nn.Parameter(torch.rand(r,m),requires_grad=True)
+        self.w_short_4 = nn.Parameter(torch.rand(r,r),requires_grad=True)
+        self.b_4 = nn.Parameter(torch.rand(r,1),requires_grad=True)
+        # sigmoid
+        self.parameters = [self.w_input_1,self.w_input_2,self.w_input_3,self.w_input_4,
+                           self.w_short_1,self.w_short_2,self.w_short_3,self.w_short_4,
+                           self.b_1,self.b_2,self.b_3,self.b_4]
+
+
+    def forward(self, input, short, long):
+        # percentage long term to remember
+        
+        o1 = torch.matmul(self.w_input_1, input)
+        o2 = torch.matmul(self.w_short_1, short)
+        o3 = torch.mul(long,torch.sigmoid(o1+o2 + self.b_1))
+
+        # percentage potential memory to remember
+        o4 = torch.matmul(self.w_input_2, input)
+        o5 = torch.matmul(self.w_short_2, short) 
+        o6 = torch.sigmoid(o4+o5 + self.b_2)
+
+        # Potential Long term memory for current input
+        o7 = torch.matmul(self.w_input_3, input)
+        o8 = torch.matmul(self.w_short_3, short)
+        o9 = torch.tanh(o7+o8+ self.b_3) 
+
+        newLong = o3 + torch.mul(o6,o9)
+        
+
+        # new short
+        o10 = torch.matmul(self.w_input_4, input)
+        o11 = torch.matmul(self.w_short_4, short)
+        o12 = torch.sigmoid(o11+o10 + self.b_4)
+        
+        newShort = torch.mul(o12,(torch.tanh(newLong)))
+        
+        return newShort,newLong
+    
+```
+
+```{python}
+class LSTM(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+        self.layers = []
+        self.ms = []
+        self.rs = []
+        self.parameters = []
+        self.loss_function = nn.MSELoss()
+    
+    def add_layer(self,m,r,n): 
+        # m : Input dimension 
+        # n : number of cells in the layer 
+        # r : output dimension
+        self.layers.append([])  
+        self.ms.append(m)
+        self.rs.append(r)   
+        for i in range(n):
+            newcell = LSTMcell(m,r)
+            self.layers[-1].append(newcell)
+            # self.parameters.append(newcell.parameters)
+            for param in newcell.parameters:
+                self.parameters.append(param)
+                
+        # self.parameters.append(newcell.w_input_1)
+        # self.parameters.append(nn.Parameter(newcell.w_input_1))
+
+    def out(self, input):
+        l = len(self.layers)
+        n = len(self.layers[0])
+
+        shorts = []
+        longs = []
+
+        current_input = input[0].unsqueeze(1)
+        shorts.append([])
+        longs.append([])
+        short_, long_ = torch.zeros(self.rs[0],1),torch.zeros(self.rs[0],1)
+
+        for k in range(len(self.layers[0])):
+            short,long = self.layers[0][k](current_input,short_,long_)
+            shorts[-1].append(short)
+            longs[-1].append(long)
+        for j in range(1,l):
+            short_, long_ = torch.zeros(self.rs[j],1),torch.zeros(self.rs[j],1)
+            shorts.append([])
+            longs.append([])
+            for k in range(len(self.layers[j])):
+                short,long = self.layers[j][k](shorts[j-1][k],short_,long_)
+                shorts[-1].append(short)
+                longs[-1].append(long)
+
+        for i in range(1,len(input)):
+            current_input = input[i].unsqueeze(1)
+            for k in range(len(self.layers[0])):
+                    shorts[0][k],longs[0][k] = self.layers[0][k](current_input,shorts[0][k],longs[0][k])
+            for j in range(1,l):
+                shorts.append([])
+                longs.append([])
+                for k in range(len(self.layers[j])):
+                    shorts[j][k],longs[j][k] = self.layers[j][k](shorts[j-1][k],shorts[j][k],longs[j][k])
+        return shorts[l-1]
+    
+    def forward(self,X):
+        out = []
+        for i in range(len(X)):
+            out.append(self.out(X[i]))
+        return torch.tensor(out,requires_grad=True)
+    
+```
+
+```{python}
+def train(lst,X,y,max_epochs):
+    optimizer = optim.Adam(lst.parameters,10)
+    for i in range(max_epochs):
+        out = lst(X)
+        loss = lst.loss_function(out,y)
+        print(loss)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+```
+
+```{python}
+X = torch.tensor([[0,0.5,0.25,1],[1,0.5,0.25,1]],dtype = torch.float32).unsqueeze(-1)
+y = torch.tensor([0,1],dtype = torch.float32).unsqueeze(-1)
+```
+
+```{python}
+lst = LSTM()
+lst.add_layer(1,2,1)
+lst.add_layer(2,1,1)
+```
+
+```{python}
+train(lst,X,y,1000)
+```
+
+```{python}
+lst.parameters
+```
+
+```{python}
+cell = LSTMcell(1,1)
+```
+
+```{python}
+x = torch.tensor([[0]],dtype=torch.float32)
+```
+

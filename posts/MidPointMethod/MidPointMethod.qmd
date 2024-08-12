@@ -1,0 +1,57 @@
+---
+title: "Mid Point Method"
+author: Nimitt
+date: 2023-01-15
+categories: [Numerical Methods]
+description: "Implementation of Mid Point Method"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+```{python}
+x = []
+y = []
+t = []
+step = 0.1
+t_end = 20
+for k in range(int(t_end/step)):
+    t.append(k*step)
+a = 1.2 
+b = 0.6
+c = 0.8
+d = 0.3
+x.append(2)
+y.append(1)
+x_previous  = 2
+y_previous = 1
+
+def x_deri(x,y):
+    a = 1.2 
+    b = 0.6
+    x_deri = a*x - b*x*y
+    return x_deri
+
+def y_deri(x,y):
+    c = 0.8
+    d = 0.3
+    y_deri =  -c*y + d*x*y
+    return y_deri
+
+for i in range(len(t)):
+    y_half = y_previous + y_deri(x_previous,y_previous)*(step/2)
+    x_half = x_previous + x_deri(x_previous,y_previous)*(step/2)
+
+    y_current = y_half + y_deri(x_half,y_half)*step/2
+    x_current = x_half + x_deri(x_half,y_half)*step/2
+
+    y.append(y_current)
+    x.append(x_current)
+    y_previous = y_current
+    x_previous = x_current
+
+print(x[-1])
+print(y[-1])
+print(len(x))
+```
+

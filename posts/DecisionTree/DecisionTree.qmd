@@ -1,0 +1,205 @@
+---
+title: "Decision Tree"
+author: Nimitt
+date: 2023-01-15
+categories: [Machine Learning]
+description: "Decision Tree Algorithm"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+```{python}
+import numpy as np
+import pandas as pd
+from scipy.special import xlogy
+from dataclasses import dataclass
+from typing import Literal
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+```
+
+```{python}
+def check_ifreal(X: pd.Series) -> bool:
+
+    return X.dtype.name != 'category'
+
+
+def entropy(Y: pd.Series) -> float:
+
+    vals = Y.value_counts(normalize=True)
+    return -np.sum(xlogy(vals, vals))
+
+
+def gini_index(Y: pd.Series) -> float:
+
+    vals = Y.value_counts(normalize=True)
+    return 1 - np.sum(np.square(vals))
+
+
+def information_gain(Y: pd.Series, attr: pd.Series, criterion) -> float:
+
+    criterion_func_map = {
+        'information_gain': entropy,
+        'gini_index': gini_index,
+        'mse': np.var
+    }
+
+    func = criterion_func_map[criterion]
+    value_before = func(Y)
+    split_value = None
+    if check_ifreal(attr):
+        split_value = opt_split_value(pd.DataFrame(attr), Y, attr.name)
+        value_after = Y.groupby(attr <= split_value).apply(lambda group: len(group) / len(Y) * func(group)).sum()
+    else:
+        value_after = Y.groupby(attr).apply(lambda group: len(group) / len(Y) * func(group)).sum()
+
+    return (value_before - value_after, split_value)
+
+
+def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion, features: pd.Series):
+
+    y = y if check_ifreal(y) else y.cat.codes
+    scores = {feature: information_gain(y, X[feature], criterion) for feature in features}
+
+    key = max(scores, key=lambda value: scores[value][0])
+    return key, scores[key][0], scores[key][1]
+
+
+def real_variance(X: pd.DataFrame, y: pd.Series, value: np.float64 , attribute):
+
+    mask = (X[attribute] <= value)
+    var_left = np.var(y[mask]) * len(y[mask])
+    var_right = np.var(y[~mask]) * len(y[~mask])
+    return var_left + var_right
+
+
+def opt_split_value(X: pd.DataFrame, y: pd.Series, attribute):
+
+    X = X.sort_values(by=[attribute])
+    check_values = [(X[attribute].iloc[i] + X[attribute].iloc[i+1]) / 2 for i in range(X.shape[0]-1)]
+
+    y = y if check_ifreal(y) else y.cat.codes
+    min_var = float('inf')
+    optimal_value = None
+
+    for value in check_values:
+        var = real_variance(X, y, value, attribute)
+        if var < min_var:
+            min_var = var
+            optimal_value = value
+
+    return optimal_value
+
+
+def split_data(X: pd.DataFrame, y: pd.Series, attribute, value=None):
+
+    if not check_ifreal(X[attribute]):
+        unique_values = np.array(X[attribute].unique())
+        return [(X[X[attribute] == val], y[X[attribute] == val]) for val in unique_values], unique_values
+    else:
+        mask = (X[attribute] <= value)
+        return [(X[mask], y[mask]), (X[~mask], y[~mask])], value
+```
+
+```{python}
+np.random.seed(42)
+
+@dataclass
+class Node:
+
+    def __init__(self, attribute=None, depth=None, impurity=None, split_values=None, value=None):
+        self.attribute = attribute
+        self.value = value
+        self.split_values = split_values
+        self.impurity = impurity
+        self.depth = depth
+        self.subnodes = {}
+        self.is_leaf = False if value is None else True
+
+@dataclass
+class DecisionTree:
+
+    criterion: Literal["information_gain", "gini_index"]
+    max_depth: int  
+    def __init__(self, criterion, max_depth=5):
+        self.criterion = criterion
+        self.max_depth = max_depth
+        self.node = None
+
+    def fit(self, X: pd.DataFrame, y: pd.Series, depth=0) -> None:
+
+        attr, impurity, split_value = opt_split_attribute(X, y, self.criterion, X.columns.tolist())
+        if depth >= self.max_depth or X.shape[0] == 0 or y.nunique() == 1:
+            self.node = Node(depth=depth, impurity=impurity, value=y.median() if check_ifreal(y) else y.mode()[0])
+            return
+
+
+        splitted_data, values = split_data(X, y, attr, split_value)
+
+        self.node = Node(attr, depth, impurity, values)
+        if check_ifreal(X[attr]):
+            for value, data in zip([True, False], splitted_data):
+                subtree = DecisionTree(self.criterion, self.max_depth)
+                subtree.fit(data[0], data[1], depth + 1)
+                self.node.subnodes[value] = subtree
+        else:
+            for value, data in zip(values, splitted_data):
+                subtree = DecisionTree(self.criterion, self.max_depth)
+                subtree.fit(data[0], data[1], depth + 1)
+                self.node.subnodes[value] = subtree
+
+    def predict(self, X: pd.DataFrame) -> pd.Series:
+
+        def traverse_tree(x, node):
+            if node.is_leaf:
+                return node.value
+            attr = node.attribute
+            split_values = node.split_values
+            value = x[attr] <= split_values if check_ifreal(x) else x[attr]
+            if value in node.subnodes:
+                return traverse_tree(x, node.subnodes[value].node)
+            else:
+                raise ValueError(
+                    f"Value {value} of {attr} not found in node {node}")
+
+        predictions = X.apply(traverse_tree, axis=1, args=(self.node,))
+        return predictions
+
+    def plot(self, depth=0) -> None:
+        """
+        Function to plot the tree
+
+        Output Example:
+        ?(X1 > 4)
+            Y: ?(X2 > 7)
+                Y: Class A
+                N: Class B
+            N: Class C
+        Where Y => Yes and N => No
+        """
+
+        node = self.node
+
+        if node.is_leaf:
+            # If the node is a leaf node
+            print(f"Class {node.value}")
+        else:
+            # If the node is an internal node
+            attribute = node.attribute
+            split_values = node.split_values
+            if isinstance(split_values, np.ndarray):
+                # Discrete input
+                for value, subnode in node.subnodes.items():
+                    endline = '' if subnode.node.is_leaf else '\n'
+                    print(f"{' ' * depth * 4}?(column {attribute} == {value}): ", end=endline)
+                    subnode.plot(depth + 1)
+            else:
+                # Real input
+                print(f"?({attribute} <= {split_values})")
+                for value, subnode in node.subnodes.items():
+                    print(f"{' ' * depth * 4}{value}: ", end="")
+                    subnode.plot(depth + 1)
+```
+

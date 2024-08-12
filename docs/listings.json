@@ -2,7 +2,34 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/SVD/SVD.html"
+      "/posts/HuggingFace/HuggingFace.html",
+      "/posts/WordEmbeddings/WordEmbeddings.html",
+      "/posts/NoiseCancellationwithGD/NoiseCancellationwithGD.html",
+      "/posts/LinearRegression/LinearRegression.html",
+      "/posts/MatrixFactorization/MatrixFactorization.html",
+      "/posts/ImageReconstruction/ImageReconstruction.html",
+      "/posts/PositionalEncoding/PositionalEncoding.html",
+      "/posts/GradientDecentWithMomentum/GradientDecentWithMomentum.html",
+      "/posts/RegularizedLinearRefression/RegularizedLinearRegression.html",
+      "/posts/RecurrentNeuralNetworks/RecurrentNeuralNetworks.html",
+      "/posts/ConvolutionalNeuralNetworks/ConvolutionalNeuralNetworks.html",
+      "/posts/Transformers/Transformers.html",
+      "/posts/seq2seq/seq2seq.html",
+      "/posts/Reconstruction_with_rff/Reconstruction_with_rff.html",
+      "/posts/GradientDecent/GradientDecent.html",
+      "/posts/LagrangeMultiplier/LagrangesMultiplier.html",
+      "/posts/BasisFunctions/BasisFunctions.html",
+      "/posts/SVD/SVD.html",
+      "/posts/FeedForwardNeuralNetworks/FeedForwardNeuralNetworks.html",
+      "/posts/Ensemble/Ensemble.html",
+      "/posts/MidPointMethod/MidPointMethod.html",
+      "/posts/HeunMethod/HeunMethod.html",
+      "/posts/GaussElimination/GaussElimination.html",
+      "/posts/LagrangeInterpolation/LagrangeInterpolation.html",
+      "/posts/TDMA/tdma.html",
+      "/posts/eulersMethod/eulersMethod.html",
+      "/posts/DecisionTree/DecisionTree.html",
+      "/posts/GaussSiedel/GaussSiedel.html"
     ]
   }
 ]

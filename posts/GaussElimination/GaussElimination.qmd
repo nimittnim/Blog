@@ -1,0 +1,116 @@
+---
+title: "Gauss Elimination"
+author: Nimitt
+date: 2023-01-15
+categories: [Numerical Methods]
+description: "Implementation of Gauss Elimination"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+```{python}
+import numpy as np
+
+n=int(input("Enter n"))
+mat=np.zeros((n,n+1))
+roots=np.zeros(n+1)
+
+def forwardElimination(mat):
+    for j in range(n):
+        row = input("Enter the first row of coefficients")
+        row_arr=row.split(" ")
+        for l in range(n):
+            mat[j,l]=row_arr[l]
+        mat[j,n]=row_arr[n]
+
+    j=0
+    while j<n :
+        for k in range(j+1,n) :
+            mat[k]=mat[k] - (mat[k,j]/mat[j,j])*mat[j]
+        j+=1
+forwardElimination(mat)
+
+def backSubstitution(mat) : 
+    global roots
+    roots[n-1]=mat[n-1,n]/mat[n-1][n-1]
+    p=n-2
+    while p>-1:
+        roots[p] = (mat[p,n] - sum((np.multiply(mat[p],roots))))/(mat[p,p])
+        p-=1
+
+backSubstitution(mat)
+print("RRF :",mat)
+print("Zeros are :",roots[0:n])
+```
+
+```{python}
+import numpy as np
+
+n=int(input("Enter n"))
+mat=np.zeros((n,n+1))
+roots=np.zeros(n+1)
+
+def forwardElimination(mat):
+    for j in range(n):
+        row = input("Enter the first row of coefficients")
+        row_arr=row.split(" ")
+        for l in range(n):
+            mat[j,l]=row_arr[l]
+        mat[j,n]=row_arr[n]
+
+    j=0
+    while j<n :
+        for k in range(j+1,n) :
+            mat[k]=mat[k] - (mat[k,j]/mat[j,j])*mat[j]
+        j+=1
+forwardElimination(mat)
+
+def backSubstitution(mat) : 
+    global roots
+    roots[n-1]=mat[n-1,n]/mat[n-1][n-1]
+    p=n-2
+    while p>-1:
+        roots[p] = (mat[p,n] - sum((np.multiply(mat[p],roots))))/(mat[p,p])
+        p-=1
+
+backSubstitution(mat)
+print("RRF :",mat)
+print("Zeros are :",roots[0:n])
+```
+
+```{python}
+import numpy as np
+
+n=int(input("Enter n"))
+mat=np.zeros((n,n+1))
+roots=np.zeros(n+1)
+
+def forwardElimination(mat):
+    for j in range(n):
+        row = input("Enter the first row of coefficients")
+        row_arr=row.split(" ")
+        for l in range(n):
+            mat[j,l]=row_arr[l]
+        mat[j,n]=row_arr[n]
+
+    j=0
+    while j<n :
+        for k in range(j+1,n) :
+            mat[k]=mat[k] - (mat[k,j]/mat[j,j])*mat[j]
+        j+=1
+forwardElimination(mat)
+
+def backSubstitution(mat) : 
+    global roots
+    roots[n-1]=mat[n-1,n]/mat[n-1][n-1]
+    p=n-2
+    while p>-1:
+        roots[p] = (mat[p,n] - sum((np.multiply(mat[p],roots))))/(mat[p,p])
+        p-=1
+
+backSubstitution(mat)
+print("RRF :",mat)
+print("Zeros are :",roots[0:n])
+```
+

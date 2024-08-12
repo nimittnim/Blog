@@ -1,0 +1,35 @@
+---
+title: "Positional Encoding"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Vector representaion of Text"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+**Positional Encoding**
+
+For Sequential data, we need to have some kind of context thing that tells how the data is related sequentially. The LSTMs used the previous cell state to influence the current input thus building context. There is one more technique introduced in Attention is all you need - Positional Encoding that does the same. 
+
+```{python}
+import torch.nn as nn
+import torch
+import numpy as np
+```
+
+```{python}
+def getPositionEncoding(seq_len, d, n=10000):  # 10000 in attention paper
+    P = torch.empty((seq_len, d))
+    for k in range(seq_len):
+        for i in range(d//2):
+            denominator = np.power(n, 2*i/d)
+            P[k, 2*i] = np.sin(k/denominator)
+            P[k, 2*i+1] = np.cos(k/denominator)
+    return P
+ 
+P = getPositionEncoding(seq_len=4, d=4, n=100)
+print(P)
+```
+

@@ -1,0 +1,58 @@
+---
+title: "Convolutional Neural Network"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Convolutional Neural Network"
+jupyter: python3
+execute:
+  eval: false  
+---
+Convolutional Neural Networks
+
+Use convolution to extract the spacial and temporal features and feed them to a Neural Network.
+
+```{python}
+import scipy as sp
+import matplotlib.pyplot as plt
+import numpy as np
+```
+
+```{python}
+# Convolution
+
+def convolve(kernel, X):
+    return sp.signal.convolve2d(kernel,X)
+```
+
+```{python}
+X = plt.imread("Datasets/duck.png")
+X = np.mean(X,-1)
+plt.imshow(X)
+```
+
+```{python}
+# Convolving filter
+
+kernel = np.empty((3,3))
+
+kernel[0][0] = -1
+kernel[0][1] = -2
+kernel[0][2] = -1
+kernel[1][0] = 0
+kernel[1][1] = 0
+kernel[1][2] = 0
+kernel[2][0] = 1
+kernel[2][1] = 2
+kernel[2][2] = 1
+```
+
+```{python}
+filtered_image = convolve(kernel,X)
+```
+
+```{python}
+plt.imshow(filtered_image)
+plt.set_cmap('Accent')
+```
+

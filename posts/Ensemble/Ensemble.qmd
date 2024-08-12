@@ -1,0 +1,49 @@
+---
+title: "Ensemble Learning"
+author: Nimitt
+date: 2023-02-10
+categories: [Machine Learning]
+description: "Paradigm of Ensemble Learning"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+**Ensemble Learning**
+
+Ensemble Learning is a very powerful technique in Machine Learning. We use uncorrelated models for prediction and use the majority as final prediction. But, the models used must be:
+
+- Uncorrelated
+- Accurate
+
+So, why does this work ? If models are uncorrelated they behave independently. Let $epsilon_{i}$ be the probabilities that model $i$ predicts incorrectly. Then, the probabilty that majority of models fail is 
+
+P = $ \Sigma_{J} \Pi_{k \in J}\epsilon_{k}$ 
+
+where J is subset of modles such that $|J| > n/2 $. Clearly, $P < \epsilon_{i}$ thus giving better performance.
+
+Similarly, for regression the output is the mean of the predictions of each model. Again, if models are independent they are off from decision boundary in orthogonal directions thus giving out True value on average.
+
+Bagging
+
+We take high variance models and try to reduce variance for getting a more generalized decision boundary.
+Algorithm : \
+We get models while training over different subsets of data. Sample Data with replacement and train the model. 
+
+Boosting
+
+We take high bias models and try to reduce bias. 
+Algorithm : \
+We incrementally build models based on current model. We assign weights to each of the datapoint. Then we train the model over it. Now, we again redistribute the weights based on performance of current model. For the datapoints predicted incorrectly, we increase their weight and decrease the weight of others. We train the model on this new Dataset.
+
+Weight Updation : 
+
+$err_{m} = \frac{\Sigma w_{i}(Incorrects)}{\Sigma w_{i}}$\
+$\alpha_{m} = log\frac{1-err_{m}}{err_m}$\
+For incorrect predictions : $w_{i} = w_{i}e^{alpha_{m}}$\
+For correct predictions : $w_{i} = w_{i}e^{-alpha_{m}}$
+
+We can emply similar strategy for Regression be chooseong appropriate error function to get $\alpha_{m}$
+
+Random Forest is the ensebmle of Decision Trees trained over subsets of data over Features spaces and Samples Space.
+

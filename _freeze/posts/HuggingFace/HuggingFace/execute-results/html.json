@@ -1,0 +1,12 @@
+{
+  "hash": "027dca06bd6207b01b9a5b7e922f8993",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Hugging Face\"\nauthor: Nimitt\ndate: 2024-03-15\ncategories: [Machine Learning]\ndescription: \"Model deployment using Hugging Face\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n::: {#e894d088 .cell execution_count=1}\n``` {.python .cell-code}\n%pip install -qU \"transformers==4.38.0\" --upgrade\n%pip install -qU \"huggingface_hub\"\n```\n:::\n\n\n::: {#a85af458 .cell execution_count=2}\n``` {.python .cell-code}\n# from google.colab import userdata\n# from huggingface_hub import login\n# login(userdata.get('HF_TOKEN'))\n```\n:::\n\n\n**Text Generation using Gemma 2B**\n\n::: {#73a42a33 .cell execution_count=3}\n``` {.python .cell-code}\nimport torch\n```\n:::\n\n\n::: {#054f8d1d .cell execution_count=4}\n``` {.python .cell-code}\nfrom transformers import pipeline\ngenerate = pipeline(task = \"text-generation\", model = \"google/gemma-2b-it\", model_kwargs = {\"torch_dtype\": torch.bfloat16},device = \"cuda\")\n```\n:::\n\n\n::: {#1e209f5b .cell execution_count=5}\n``` {.python .cell-code}\ninst = [\n    {\n        \"role\" : \"user\",\n        \"content\" : \"Define an algorithm\"\n    }\n]\nprompt = generate.tokenizer.apply_chat_template(inst,tokenize = False,add_generation_prompt = True)\n```\n:::\n\n\n::: {#c9684b69 .cell execution_count=6}\n``` {.python .cell-code}\nprint(prompt)\n```\n:::\n\n\n::: {#18d23275 .cell execution_count=7}\n``` {.python .cell-code}\nout = generate(prompt, max_new_tokens = 200)\nprint(out)\n```\n:::\n\n\n::: {#0f572bea .cell execution_count=8}\n``` {.python .cell-code}\nprint(out[0][\"generated_text\"][len(prompt):])\n```\n:::\n\n\n**Text Classification**\n\n::: {#8e80c78c .cell execution_count=9}\n``` {.python .cell-code}\nclassifier = pipeline(task = \"sentiment-analysis\",model = \"distilbert/distilbert-base-uncased-finetuned-sst-2-english\")\n```\n:::\n\n\n::: {#d4e9f65d .cell execution_count=10}\n``` {.python .cell-code}\nclassifier(\"You are so kind\")\n```\n:::\n\n\n::: {#52b49808 .cell execution_count=11}\n``` {.python .cell-code}\nclassifier(\"You should not behave rudely\")\n```\n:::\n\n\n::: {#fc400eb8 .cell execution_count=12}\n``` {.python .cell-code}\nclassifier(\"Everything is happening worst in my life\")\n```\n:::\n\n\n",
+    "supporting": [
+      "HuggingFace_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

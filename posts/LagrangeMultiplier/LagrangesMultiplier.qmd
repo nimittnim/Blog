@@ -1,0 +1,20 @@
+---
+title: "Lagranges Multiplier"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Constrained Optimisation"
+jupyter: python3
+execute:
+  eval: false  
+---
+Lagrange's Multiplier 
+
+find the optmial $\theta$ under the given constraints. 
+If,
+    $g(\theta) = \alpha$ 
+is the constraint then,
+
+add a penalty $P(\theta)$ to the loss function such that,
+    $P(\theta) = g^-(\theta)$
+

@@ -1,0 +1,85 @@
+---
+title: "Gradient Decent with Momentum"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Accelerating Gradient Decent using Momentum"
+jupyter: python3
+execute:
+  eval: false  
+---
+Gradient Decent With Momentum
+
+The previous update in parameters is indicator for curvature of the loss surface. So, we use the previous update along with current gradient to update the parameters. 
+
+$\theta_{t} = \theta_{t-1} + \alpha \frac{\partial L(\theta)}{\partial \theta} (\theta_{t-1}) + m \delta \theta_{t-1}$
+
+where $ 0 < m < 1 $
+
+Greater the m, more the infuence of previous update on current gradient.
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+```{python}
+n = 100
+
+def Loss(theta):
+    return theta**2
+
+def grdaient_Loss(theta):
+    return 2*theta 
+```
+
+```{python}
+max_iterations = 25
+alpha = 0.1
+
+theta = 5
+thetas_gradient = np.empty(25)
+print("Gradient Decent")
+for i in range(max_iterations):
+    theta = theta - alpha*grdaient_Loss(theta)
+    thetas_gradient[i] = theta
+    # print(f'Current theta = {theta}, f(current_theta) = {Loss(theta)}')
+```
+
+Using Momentum
+
+```{python}
+max_iterations = 25
+alpha = 0.1
+m = 0.35
+theta = 5
+deltheta = 0
+
+print("Gradient Decent with Momentum")
+thetas_momentum = np.empty(25)
+for i in range(max_iterations):
+    deltheta = alpha*grdaient_Loss(theta) + m*deltheta
+    theta = theta - deltheta
+    thetas_momentum[i] = theta
+    # print(f'Current theta = {theta}, f(current_theta) = {Loss(theta)}')
+```
+
+```{python}
+# True Minima  
+X = np.linspace(-100,100,10000) 
+y = Loss(X)
+minima = X[np.argmin(y)]
+```
+
+```{python}
+sn = np.arange(max_iterations)
+expected_minima = minima*np.ones(max_iterations)
+plt.plot(sn, thetas_gradient, label = "GD")
+plt.plot(sn,thetas_momentum, label = "GD with Momentum")
+plt.plot(sn,expected_minima, label = "Expected Minima")
+plt.legend()
+plt.xlabel("Iteration")
+plt.ylabel("Current Theta")
+plt.show()
+```
+

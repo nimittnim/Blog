@@ -1,0 +1,12 @@
+{
+  "hash": "98012bc4efb635945264ae789b89ab23",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"TDMA\"\nauthor: Nimitt\ndate: 2023-01-15\ncategories: [Numerical Methods]\ndescription: \"Implementation of TDMA\"\njupyter: python3\nexecute:\n  eval: false  \n---\n\n::: {#7644f8f8 .cell execution_count=1}\n``` {.python .cell-code}\n#This code genrates L and U and then subctitutes to get roots\nn = int(input(\"Enter n\"))\n\nmat=[]\nfor i in range(n):\n    mat.append([0.0] * (n))\n\n\n\nfor j in range(n):\n    row = input(f\"Enter the {j + 1} th row of coefficient Matrix\")\n    row_arr = row.split(\" \")\n    for l in range(n):\n        mat[j][l] = float(row_arr[l])\nprint(\"Entered Matrix : \\n\")\nfor m in range(n):\n    print(mat[m])\nL = []\nfor i in range(n):\n    L.append([0.0] * (n))\nfor i in range(n):\n    L[i][i] = 1\n\nU = []\nfor i in range(n):\n    U.append([0.0] * (n))\n\ndef forwardElimination(mat,L,U):\n    for j in range(n):\n        for k in range(j+1,n) :\n            f_kj = mat[k][j]/mat[j][j]\n            L[k][j] = - f_kj\n            for l in range(n):\n                mat[k][l]=mat[k][l] - (f_kj)*mat[j][l]\n    for q in range(n):\n        for p in range(n):\n            U[q][p] = mat[q][p]\n\nforwardElimination(mat,L,U)\nprint('\\n')\nprint(\"L is : \")\nfor m in range(n):\n    print(L[m])\n\nprint('\\n')\nprint(\"U is : \")\nfor m in range(n):\n    print(U[m])\n```\n:::\n\n\n",
+    "supporting": [
+      "tdma_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

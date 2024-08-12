@@ -1,0 +1,224 @@
+---
+title: "Gradient Decent"
+author: Nimitt
+date: 2023-03-15
+categories: [Machine Learning]
+description: "Optimisation using Gradient Decent"
+jupyter: python3
+execute:
+  eval: false  
+---
+
+Gradient Decent
+
+$\theta_{i+1} = \theta_{i-1} - \alpha \frac{\partial{loss(\theta)}}{\partial{\theta}}$
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.datasets import load_diabetes
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import mean_squared_error
+```
+
+Example 1 
+
+```{python}
+# Creating the dataset
+n = 100
+X = np.random.rand(n)
+y = 2*X + 0.05*np.random.randn(n)
+plt.scatter(X,y)
+plt.xlabel('X')
+plt.ylabel('y')
+plt.show()
+```
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.2)
+```
+
+```{python}
+def loss_function(theta,X_tr, y_tr):
+    return mean_squared_error(theta*X_tr - y_tr)
+
+def gradient_loss_function(theta, X_tr, y_tr):
+    return 2*(theta*np.sum(X_tr) - np.sum(y_tr))*np.sum(X_tr)
+
+def model(theta, X_t):
+    return theta*X_t
+```
+
+```{python}
+max_iterations = 5
+alpha = 0.2
+theta = np.random.rand() # initializing theta
+for i in range(max_iterations):
+    print(theta)
+    theta = theta - 0.0002*gradient_loss_function(theta, X_train, y_train)  # learning theta
+    plt.scatter(X_test, y_test)
+    plt.plot(X_test, model(theta, X_test))
+    plt.show()
+```
+
+We can see the performance of the model improves as we use gradient decent to train.
+
+Regular Gradient Decent
+
+```{python}
+# Creating the dataset
+data = load_diabetes()
+X = data['data']
+y = data['target']
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+```
+
+```{python}
+# loss function
+def loss_function_gradient(theta, i, X_t, y_t): 
+    return -2*np.sum((y_t - X_t@theta)*X_t[:,i])/len(X_t)
+
+# initializing theta
+theta = np.random.rand(X_train.shape[1])
+alpha = 0.2
+
+# Regular Gradient Decent
+max_iterations = 1000
+for i in range(max_iterations):
+    for j in range(len(theta)):
+        theta[j] = theta[j] - alpha*(loss_function_gradient(theta, j, X_train, y_train))
+
+y_hat = X_test@theta
+```
+
+```{python}
+sno = np.arange(len(y_test))
+plt.plot(sno, y_test)
+plt.plot(sno, y_hat)
+plt.show()
+```
+
+Now, we intend to add more polynomial features to train over
+
+```{python}
+trans = PolynomialFeatures(degree = 2)
+X_train_with_pf = trans.fit_transform(X_train)
+X_test_with_pf = trans.fit_transform(X_test)
+```
+
+```{python}
+# Training
+
+# loss function
+def loss_function_gradient(theta, i, X_t, y_t): 
+    return -2*np.sum((y_t - X_t@theta)*X_t[:,i])/len(X_t)
+
+# initializing theta
+theta = np.random.rand(X_train_with_pf.shape[1])
+alpha = 0.2
+
+# Regular Gradient Decent
+max_iterations = 1000
+for i in range(max_iterations):
+    for j in range(len(theta)):
+        theta[j] = theta[j] - alpha*(loss_function_gradient(theta, j, X_train_with_pf, y_train))
+y_hat = X_test_with_pf@theta
+```
+
+```{python}
+sno = np.arange(len(y_test))
+plt.plot(sno, y_test)
+plt.plot(sno, y_hat)
+plt.show()
+```
+
+```{python}
+# loss
+mean_squared_error(y_test, y_hat)
+```
+
+Stochastic Gradient Decent
+
+```{python}
+# creating the dataset
+
+data = load_diabetes()
+X = data['data']
+y = data['target']
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+```
+
+```{python}
+# loss function
+def loss_function_stochastic_gradient(theta, i, X_t, j, y_t): 
+    return -2*((y_t[j] - X_t[j]@theta)*X_t[j][i])/len(X_t)
+
+# initializing theta
+theta = np.random.rand(X_train.shape[1])
+alpha = 0.2
+
+# Stochastic Gradient Decent
+max_epochs = 1000
+for i in range(max_epochs):
+    # k = np.random.randint(0,len(X_train))
+    for k in range(len(X_train)):
+        for j in range(len(theta)):
+            theta[j] = theta[j] - alpha*(loss_function_stochastic_gradient(theta, j, X_train,k, y_train))
+
+y_hat = X_test@theta
+```
+
+```{python}
+# plotting prediction
+sno = np.arange(len(y_test))
+plt.plot(sno, y_test)
+plt.plot(sno, y_hat)
+plt.show()
+```
+
+Adding more features into the dataset
+
+```{python}
+# adding polynomial features
+trans = PolynomialFeatures(degree = 2)
+X_train_with_pf = trans.fit_transform(X_train)
+X_test_with_pf = trans.fit_transform(X_test)
+```
+
+Stochastic Gradient Decent
+
+```{python}
+# loss function
+def loss_function_stochastic_gradient(theta, i, X_t, j, y_t): 
+    return -2*((y_t[j] - X_t[j]@theta)*X_t[j][i])/len(X_t)
+
+# initializing theta
+theta = np.random.rand(X_train_with_pf.shape[1])
+alpha = 0.2
+
+# Stochastic Gradient Decent
+
+max_iterations = 1000
+for i in range(max_iterations):
+    for k in range(len(X_train_with_pf)):
+        for j in range(len(theta)):
+            theta[j] = theta[j] - alpha*(loss_function_stochastic_gradient(theta, j, X_train_with_pf,k, y_train))
+
+y_hat = X_test_with_pf@theta
+```
+
+```{python}
+# plotting prediction
+sno = np.arange(len(y_test))
+plt.plot(sno, y_test)
+plt.plot(sno, y_hat)
+plt.show()
+```
+
+```{python}
+# loss
+mean_squared_error(y_test, y_hat)
+```
+

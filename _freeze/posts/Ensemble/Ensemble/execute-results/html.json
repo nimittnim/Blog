@@ -1,0 +1,12 @@
+{
+  "hash": "c1d7d5c6dcafb00f017d17919cd158c6",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\njupyter: python3\n---\n\n\n\n\n**Ensemble Learning**\n\nEnsemble Learning is a very powerful technique in Machine Learning. We use uncorrelated models for prediction and use the majority as final prediction. But, the models used must be:\n\n- Uncorrelated\n- Accurate\n\nSo, why does this work ? If models are uncorrelated they behave independently. Let $epsilon_{i}$ be the probabilities that model $i$ predicts incorrectly. Then, the probabilty that majority of models fail is \n\nP = $ \\Sigma_{J} \\Pi_{k \\in J}\\epsilon_{k}$ \n\nwhere J is subset of modles such that $|J| > n/2 $. Clearly, $P < \\epsilon_{i}$ thus giving better performance.\n\nSimilarly, for regression the output is the mean of the predictions of each model. Again, if models are independent they are off from decision boundary in orthogonal directions thus giving out True value on average.\n\nBagging\n\nWe take high variance models and try to reduce variance for getting a more generalized decision boundary.\nAlgorithm : \\\nWe get models while training over different subsets of data. Sample Data with replacement and train the model. \n\nBoosting\n\nWe take high bias models and try to reduce bias. \nAlgorithm : \\\nWe incrementally build models based on current model. We assign weights to each of the datapoint. Then we train the model over it. Now, we again redistribute the weights based on performance of current model. For the datapoints predicted incorrectly, we increase their weight and decrease the weight of others. We train the model on this new Dataset.\n\nWeight Updation : \n\n$err_{m} = \\frac{\\Sigma w_{i}(Incorrects)}{\\Sigma w_{i}}$\\\n$\\alpha_{m} = log\\frac{1-err_{m}}{err_m}$\\\nFor incorrect predictions : $w_{i} = w_{i}e^{alpha_{m}}$\\\nFor correct predictions : $w_{i} = w_{i}e^{-alpha_{m}}$\n\nWe can emply similar strategy for Regression be chooseong appropriate error function to get $\\alpha_{m}$\n\nRandom Forest is the ensebmle of Decision Trees trained over subsets of data over Features spaces and Samples Space.\n\n",
+    "supporting": [
+      "Ensemble_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

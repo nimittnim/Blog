@@ -1,0 +1,12 @@
+{
+  "hash": "547b1df40508334873b390d0e9cbd274",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\njupyter: python3\n---\n\n\n\n\nRegularized Linear Regression\n\nWe decrease bias in a Linear Regression model by adding polynomial features. But with increase in degree of Regression, the complexity increases and chances of overfitting increase. One symptom of overfitting is altenative addition and subtration terms with large coeffiecients. We can avoid this by adding a penalty term in the loss function that keeps check on this. The modified loss function is :\n\n$ L(\\theta) = (Y - X \\theta)^{T}(Y - X \\theta) + f(\\theta) $\n\n$f(\\theta)$ is the penalty term for checking overshooting for $\\theta$.\n\nRidge Regression\n\n $f(\\theta) = \\theta^{T}\\theta$\n\nSo, To find optimal \\theta we differentiate $L(\\theta)$ wrt \\theta and equate to $0$. Thus, getting,\n\n$ \\theta_{optimal} = (X^{T} X + \\mu I^{*})^{-1}X^{T}y$\n\nNote $I^{*}$ is identity matrix with $I[0][0] = 0$, as we don't want to keep check on the intercept parameter $\\theta_{0}$\n\nLasso Regression \n\n$f(\\theta) = \\Sigma_{i = 0}^{n} |\\theta_{i}|$\n\n",
+    "supporting": [
+      "RegularizedLinearRegression_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

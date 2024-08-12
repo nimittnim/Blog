@@ -1,0 +1,12 @@
+{
+  "hash": "56fadade18082ed7b9ed9d831cfd4407",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\njupyter: python3\n---\n\n\n\n\nPiecewise Linear Regression\n\nIn this, we divide the dataset into subdatasets and train liner regression for each of the datasets.\n\n",
+    "supporting": [
+      "PiecewiseLinearRegression_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}
