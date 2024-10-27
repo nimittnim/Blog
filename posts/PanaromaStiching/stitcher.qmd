@@ -1,9 +1,9 @@
 ---
-title: "Panaroma Stiching"
+title: "Panorama Stitching"
 author: Nimitt
 date: 2024-10-15
 categories: [Computer Vision]
-description: "Implementation of Panaroma Sticher using Homography"
+description: "Implementation of Panorama Stitcher using Homography"
 jupyter: python3
 execute:
   eval: false  
