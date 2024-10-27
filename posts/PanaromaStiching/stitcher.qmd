@@ -1,7 +1,7 @@
 ---
 title: "Panorama Stitching using homography"
 author: Nimitt
-date: 2023-09-15
+date: 2024-10-21
 categories: [Computer Vision]
 description: "Implementation of Panorama stitcher using homography"
 jupyter: python3
