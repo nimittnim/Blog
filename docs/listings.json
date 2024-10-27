@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/PanaromaStiching/stitcher.html",
       "/posts/CornerDetection/corner_detection.html",
       "/posts/EdgeDetection/edge_detection.html",
       "/posts/ImageReconstruction/ImageReconstruction.html",
@@ -13,7 +14,6 @@
       "/posts/DecisionTree/DecisionTree.html",
       "/posts/ConvolutionalNeuralNetworks/ConvolutionalNeuralNetworks.html",
       "/posts/NoiseCancellationwithGD/NoiseCancellationwithGD.html",
-      "/posts/PanaromaStiching/stitcher.html",
       "/posts/LinearRegression/LinearRegression.html",
       "/posts/GradientDecentWithMomentum/GradientDecentWithMomentum.html",
       "/posts/Reconstruction_with_rff/Reconstruction_with_rff.html",
