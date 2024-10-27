@@ -1,7 +1,7 @@
 ---
 title: "Convolutional Neural Network"
 author: Nimitt
-date: 2023-03-15
+date: 2023-12-15
 categories: [Machine Learning]
 description: "Convolutional Neural Network"
 jupyter: python3

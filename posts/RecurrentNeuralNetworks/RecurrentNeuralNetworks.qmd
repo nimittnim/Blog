@@ -1,7 +1,7 @@
 ---
 title: "Recurrent Neural Networks"
 author: Nimitt
-date: 2023-03-15
+date: 2024-03-15
 categories: [Machine Learning]
 description: "Overview of RNNs"
 jupyter: python3

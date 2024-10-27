@@ -1,7 +1,7 @@
 ---
 title: "Image Reconstruction"
 author: Nimitt
-date: 2023-03-15
+date: 2024-04-1
 categories: [Machine Learning]
 description: "Image Reconstruction using Linear Regression"
 jupyter: python3

@@ -1,7 +1,7 @@
 ---
 title: "Basis Functions"
 author: Nimitt
-date: 2023-03-12
+date: 2024-03-12
 categories: [Machine Learning]
 description: "Basis Functions for Linear Regression"
 jupyter: python3

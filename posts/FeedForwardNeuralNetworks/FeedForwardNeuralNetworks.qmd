@@ -1,7 +1,7 @@
 ---
 title: "Feed Forward Neural Network"
 author: Nimitt
-date: 2023-02-15
+date: 2024-02-15
 categories: [Machine Learning]
 description: "Implementation of Feed Forward Neural Network from scratch"
 jupyter: python3

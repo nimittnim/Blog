@@ -1,7 +1,7 @@
 ---
 title: "Regularized Linear Regression"
 author: Nimitt
-date: 2023-03-15
+date: 2024-03-14
 categories: [Machine Learning]
 description: "Constrained Optimisation"
 jupyter: python3

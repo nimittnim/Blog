@@ -1,7 +1,7 @@
 ---
 title: "Noise Cancellation with FIR Filter"
 author: Nimitt
-date: 2023-03-15
+date: 2023-09-15
 categories: [Signal Processing]
 description: "Using FIR filter to filter noise"
 jupyter: python3

@@ -1,7 +1,7 @@
 ---
 title: "Decision Tree"
 author: Nimitt
-date: 2023-01-15
+date: 2024-01-15
 categories: [Machine Learning]
 description: "Decision Tree Algorithm"
 jupyter: python3
