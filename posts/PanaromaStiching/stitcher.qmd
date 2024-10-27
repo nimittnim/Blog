@@ -1,14 +1,13 @@
 ---
-title: "Panorama Stitching"
+title: "Panorama Stitching using homography"
 author: Nimitt
-date: 2024-10-15
+date: 2023-09-15
 categories: [Computer Vision]
-description: "Implementation of Panorama Stitcher using Homography"
+description: "Implementation of Panorama stitcher using homography"
 jupyter: python3
 execute:
-  eval: false  
+  eval: true
 ---
-
 
 
 ### Importing Libraries
@@ -186,7 +185,7 @@ class Stitcher:
 
 for i in range(6):
     print(f'Location {i+1}')
-    image_paths = sorted(glob.glob(f'path'))
+    image_paths = sorted(glob.glob(f'/Users/nimitt/Documents/ES666-Assignment3/Images/I{i+1}' + '/*.JPG'))
     fig, axes = plt.subplots(nrows=1, ncols=len(image_paths), figsize=(15, 5))  
    
     for j, img_path in enumerate(image_paths):
@@ -205,7 +204,7 @@ for i in range(6):
 
 ```{python}
 for i in range(6):
-    image_paths = sorted(glob.glob(f'path'))  
+    image_paths = sorted(glob.glob(f'/Users/nimitt/Documents/ES666-Assignment3/Images/I{i+1}' + '/*.JPG'))  
     stitched_image = None
     stitcher = Stitcher()
 

@@ -6,11 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Nimitt">
-<meta name="dcterms.date" content="2024-02-15">
-<meta name="description" content="Implementation of Feed Forward Neural Network from scratch">
 
-<title>Feed Forward Neural Network – Nimitt Blog</title>
+<title>feedforwardneuralnetworkds – Nimitt Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -147,43 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Feed Forward Neural Network</h1>
-                  <div>
-        <div class="description">
-          Implementation of Feed Forward Neural Network from scratch
-        </div>
-      </div>
-                          <div class="quarto-categories">
-                <div class="quarto-category">Machine Learning</div>
-              </div>
-                  </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Nimitt </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">February 15, 2024</p>
-      </div>
-    </div>
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
@@ -193,8 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-
-<div id="12537814" class="cell" data-execution_count="1">
+<div id="4bbdcbe1" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_diabetes</span>
@@ -203,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Activation Functions</p>
-<div id="916c7cf1" class="cell" data-execution_count="2">
+<div id="2e5957b4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Heaviside step function </span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> heavyside(x):</span>
@@ -231,14 +191,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Gassian error Linear Unit GeLU function</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Neural Network</p>
-<div id="bd5d512a" class="cell" data-execution_count="3">
+<div id="693b1537" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> load_diabetes()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[<span class="st">'data'</span>]</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> data[<span class="st">'target'</span>]</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X,y,test_size<span class="op">=</span><span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="e6810cf4" class="cell" data-execution_count="4">
+<div id="9e01103f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NeuralNetwork :</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
@@ -380,24 +340,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a>                prediction[i][j] <span class="op">=</span> out[j]</span>
 <span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> prediction</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="6807a176" class="cell" data-execution_count="5">
+<div id="0e815f56" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nn <span class="op">=</span> NeuralNetwork()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>nn.add_layer(<span class="dv">10</span>,<span class="st">'r'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>nn.add_layer(<span class="dv">1</span>,<span class="st">'i'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="c295f088" class="cell" data-execution_count="6">
+<div id="129e1d22" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nn.forward(X_train[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>array([4.64374719])</code></pre>
+<pre><code>array([3.2008611])</code></pre>
 </div>
 </div>
-<div id="d0f70b50" class="cell" data-execution_count="7">
+<div id="85dd9567" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nn.train(<span class="fl">0.0001</span>, X_train, y_train) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="68919aa3" class="cell" data-execution_count="8">
+<div id="63b22643" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> nn.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="dd98aac4" class="cell" data-execution_count="9">
+<div id="f9f33d81" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> np.arange(<span class="bu">len</span>(y_test))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.plot(sr,y_test)</span>
@@ -406,24 +366,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FeedForwardNeuralNetworks_files/figure-html/cell-10-output-1.png" width="575" height="411" class="figure-img"></p>
+<p><img src="FeedForwardNeuralNetworkds_files/figure-html/cell-10-output-1.png" width="575" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="178c3311" class="cell" data-execution_count="10">
+<div id="a03b06b7" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mean_squared_error(y_hat, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>4603.86762041782</code></pre>
+<pre><code>3789.3794191754478</code></pre>
 </div>
 </div>
 <p>PyTorch Implementation</p>
-<div id="a8cbd843" class="cell" data-execution_count="11">
+<div id="6f1ea413" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="2c6438d6" class="cell" data-execution_count="12">
+<div id="816523a9" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dataset</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> load_diabetes()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> data[<span class="st">'data'</span>]</span>
@@ -470,112 +430,112 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   (3): ReLU()
   (4): Linear(in_features=8, out_features=1, bias=True)
 )
-Finished epoch 0, current loss 39430.796875
-Finished epoch 1, current loss 39371.40234375
-Finished epoch 2, current loss 39288.9453125
-Finished epoch 3, current loss 39166.67578125
-Finished epoch 4, current loss 38978.01953125
-Finished epoch 5, current loss 38691.71875
-Finished epoch 6, current loss 38286.2578125
-Finished epoch 7, current loss 37742.890625
-Finished epoch 8, current loss 37045.90625
-Finished epoch 9, current loss 36183.44921875
-Finished epoch 10, current loss 35148.11328125
-Finished epoch 11, current loss 33937.453125
-Finished epoch 12, current loss 32554.349609375
-Finished epoch 13, current loss 30962.876953125
-Finished epoch 14, current loss 29044.134765625
-Finished epoch 15, current loss 26917.544921875
-Finished epoch 16, current loss 24644.7890625
-Finished epoch 17, current loss 22282.912109375
-Finished epoch 18, current loss 19890.126953125
-Finished epoch 19, current loss 17525.162109375
-Finished epoch 20, current loss 15244.6845703125
-Finished epoch 21, current loss 13100.0439453125
-Finished epoch 22, current loss 11133.9375
-Finished epoch 23, current loss 9377.609375
-Finished epoch 24, current loss 7849.04443359375
-Finished epoch 25, current loss 6552.55419921875
-Finished epoch 26, current loss 5479.93994140625
-Finished epoch 27, current loss 4613.046875
-Finished epoch 28, current loss 3927.177734375
-Finished epoch 29, current loss 3394.667236328125
-Finished epoch 30, current loss 2987.931884765625
-Finished epoch 31, current loss 2681.645263671875
-Finished epoch 32, current loss 2453.90234375
-Finished epoch 33, current loss 2286.577880859375
-Finished epoch 34, current loss 2165.157958984375
-Finished epoch 35, current loss 2078.290283203125
-Finished epoch 36, current loss 2017.2388916015625
-Finished epoch 37, current loss 1975.3675537109375
-Finished epoch 38, current loss 1947.68017578125
-Finished epoch 39, current loss 1930.4427490234375
-Finished epoch 40, current loss 1920.8880615234375
-Finished epoch 41, current loss 1916.9691162109375
-Finished epoch 42, current loss 1917.1829833984375
-Finished epoch 43, current loss 1920.4342041015625
-Finished epoch 44, current loss 1925.9224853515625
-Finished epoch 45, current loss 1933.0662841796875
-Finished epoch 46, current loss 1941.4425048828125
-Finished epoch 47, current loss 1950.7489013671875
-Finished epoch 48, current loss 1960.7578125
-Finished epoch 49, current loss 1971.3092041015625
-Finished epoch 50, current loss 1982.2811279296875
-Finished epoch 51, current loss 1993.5850830078125
-Finished epoch 52, current loss 2005.1541748046875
-Finished epoch 53, current loss 2016.9324951171875
-Finished epoch 54, current loss 2028.8760986328125
-Finished epoch 55, current loss 2040.9560546875
-Finished epoch 56, current loss 2053.14208984375
-Finished epoch 57, current loss 2065.406494140625
-Finished epoch 58, current loss 2077.73046875
-Finished epoch 59, current loss 2090.09228515625
-Finished epoch 60, current loss 2102.475341796875
-Finished epoch 61, current loss 2114.868408203125
-Finished epoch 62, current loss 2127.252197265625
-Finished epoch 63, current loss 2139.616455078125
-Finished epoch 64, current loss 2151.944091796875
-Finished epoch 65, current loss 2164.228271484375
-Finished epoch 66, current loss 2176.454833984375
-Finished epoch 67, current loss 2188.6142578125
-Finished epoch 68, current loss 2200.697021484375
-Finished epoch 69, current loss 2212.692138671875
-Finished epoch 70, current loss 2224.598388671875
-Finished epoch 71, current loss 2236.403564453125
-Finished epoch 72, current loss 2248.100830078125
-Finished epoch 73, current loss 2259.682373046875
-Finished epoch 74, current loss 2271.144287109375
-Finished epoch 75, current loss 2282.484130859375
-Finished epoch 76, current loss 2293.690673828125
-Finished epoch 77, current loss 2304.759521484375
-Finished epoch 78, current loss 2315.693359375
-Finished epoch 79, current loss 2326.484619140625
-Finished epoch 80, current loss 2337.131591796875
-Finished epoch 81, current loss 2347.63232421875
-Finished epoch 82, current loss 2357.9833984375
-Finished epoch 83, current loss 2368.1845703125
-Finished epoch 84, current loss 2378.231689453125
-Finished epoch 85, current loss 2388.127197265625
-Finished epoch 86, current loss 2397.86669921875
-Finished epoch 87, current loss 2407.452392578125
-Finished epoch 88, current loss 2416.882568359375
-Finished epoch 89, current loss 2426.157958984375
-Finished epoch 90, current loss 2435.28125
-Finished epoch 91, current loss 2444.251953125
-Finished epoch 92, current loss 2453.069580078125
-Finished epoch 93, current loss 2461.735107421875
-Finished epoch 94, current loss 2470.248046875
-Finished epoch 95, current loss 2478.616943359375
-Finished epoch 96, current loss 2486.839111328125
-Finished epoch 97, current loss 2494.916748046875
-Finished epoch 98, current loss 2502.853515625
-Finished epoch 99, current loss 2510.64599609375</code></pre>
+Finished epoch 0, current loss 24461.0625
+Finished epoch 1, current loss 24431.712890625
+Finished epoch 2, current loss 24398.048828125
+Finished epoch 3, current loss 24355.734375
+Finished epoch 4, current loss 24296.548828125
+Finished epoch 5, current loss 24212.166015625
+Finished epoch 6, current loss 24095.203125
+Finished epoch 7, current loss 23938.404296875
+Finished epoch 8, current loss 23727.669921875
+Finished epoch 9, current loss 23456.560546875
+Finished epoch 10, current loss 23121.474609375
+Finished epoch 11, current loss 22719.4609375
+Finished epoch 12, current loss 22248.814453125
+Finished epoch 13, current loss 21709.259765625
+Finished epoch 14, current loss 21102.046875
+Finished epoch 15, current loss 20429.998046875
+Finished epoch 16, current loss 19697.513671875
+Finished epoch 17, current loss 18910.548828125
+Finished epoch 18, current loss 18076.54296875
+Finished epoch 19, current loss 17204.318359375
+Finished epoch 20, current loss 16303.89453125
+Finished epoch 21, current loss 15386.296875
+Finished epoch 22, current loss 14463.2724609375
+Finished epoch 23, current loss 13546.9833984375
+Finished epoch 24, current loss 12649.65234375
+Finished epoch 25, current loss 11783.171875
+Finished epoch 26, current loss 10958.6904296875
+Finished epoch 27, current loss 10186.2041015625
+Finished epoch 28, current loss 9474.1728515625
+Finished epoch 29, current loss 8829.1630859375
+Finished epoch 30, current loss 8255.5966796875
+Finished epoch 31, current loss 7755.56591796875
+Finished epoch 32, current loss 7328.80712890625
+Finished epoch 33, current loss 6972.79052734375
+Finished epoch 34, current loss 6682.978515625
+Finished epoch 35, current loss 6453.185546875
+Finished epoch 36, current loss 6276.05908203125
+Finished epoch 37, current loss 6143.60791015625
+Finished epoch 38, current loss 6047.716796875
+Finished epoch 39, current loss 5980.62060546875
+Finished epoch 40, current loss 5935.27099609375
+Finished epoch 41, current loss 5905.58447265625
+Finished epoch 42, current loss 5886.5546875
+Finished epoch 43, current loss 5874.25390625
+Finished epoch 44, current loss 5865.75439453125
+Finished epoch 45, current loss 5858.984375
+Finished epoch 46, current loss 5852.56640625
+Finished epoch 47, current loss 5845.65625
+Finished epoch 48, current loss 5837.79833984375
+Finished epoch 49, current loss 5828.80078125
+Finished epoch 50, current loss 5818.64208984375
+Finished epoch 51, current loss 5807.39990234375
+Finished epoch 52, current loss 5795.20458984375
+Finished epoch 53, current loss 5782.20166015625
+Finished epoch 54, current loss 5768.54150390625
+Finished epoch 55, current loss 5754.36376953125
+Finished epoch 56, current loss 5739.78271484375
+Finished epoch 57, current loss 5724.8984375
+Finished epoch 58, current loss 5709.79541015625
+Finished epoch 59, current loss 5694.53759765625
+Finished epoch 60, current loss 5679.18115234375
+Finished epoch 61, current loss 5663.76171875
+Finished epoch 62, current loss 5648.31103515625
+Finished epoch 63, current loss 5632.85302734375
+Finished epoch 64, current loss 5617.40380859375
+Finished epoch 65, current loss 5601.97509765625
+Finished epoch 66, current loss 5586.576171875
+Finished epoch 67, current loss 5571.21240234375
+Finished epoch 68, current loss 5555.89013671875
+Finished epoch 69, current loss 5540.60546875
+Finished epoch 70, current loss 5525.36767578125
+Finished epoch 71, current loss 5510.171875
+Finished epoch 72, current loss 5495.0234375
+Finished epoch 73, current loss 5479.91650390625
+Finished epoch 74, current loss 5464.85400390625
+Finished epoch 75, current loss 5449.83740234375
+Finished epoch 76, current loss 5434.85986328125
+Finished epoch 77, current loss 5419.92626953125
+Finished epoch 78, current loss 5405.03564453125
+Finished epoch 79, current loss 5390.18505859375
+Finished epoch 80, current loss 5375.376953125
+Finished epoch 81, current loss 5360.6103515625
+Finished epoch 82, current loss 5345.88525390625
+Finished epoch 83, current loss 5331.19921875
+Finished epoch 84, current loss 5316.55322265625
+Finished epoch 85, current loss 5301.95068359375
+Finished epoch 86, current loss 5287.38720703125
+Finished epoch 87, current loss 5272.8662109375
+Finished epoch 88, current loss 5258.38525390625
+Finished epoch 89, current loss 5243.94580078125
+Finished epoch 90, current loss 5229.54833984375
+Finished epoch 91, current loss 5215.1923828125
+Finished epoch 92, current loss 5200.87939453125
+Finished epoch 93, current loss 5186.60986328125
+Finished epoch 94, current loss 5172.38232421875
+Finished epoch 95, current loss 5158.20068359375
+Finished epoch 96, current loss 5144.06201171875
+Finished epoch 97, current loss 5129.96923828125
+Finished epoch 98, current loss 5115.919921875
+Finished epoch 99, current loss 5101.91845703125</code></pre>
 </div>
 </div>
-<div id="b1530f84" class="cell" data-execution_count="13">
+<div id="387a5b65" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> model(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="ab43de23" class="cell" data-execution_count="14">
+<div id="335d2d20" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> np.arange(<span class="bu">len</span>(y_test))</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.plot(sr, np.array(y_test))</span>
@@ -584,7 +544,7 @@ Finished epoch 99, current loss 2510.64599609375</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FeedForwardNeuralNetworks_files/figure-html/cell-15-output-1.png" width="575" height="411" class="figure-img"></p>
+<p><img src="FeedForwardNeuralNetworkds_files/figure-html/cell-15-output-1.png" width="575" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
